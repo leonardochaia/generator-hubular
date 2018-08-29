@@ -1,7 +1,6 @@
 import { Brain } from 'hubot';
 import { HeroInfo } from './heroes.models';
-import { Injectable, Inject } from 'injection-js';
-import { BRAIN } from 'hubular';
+import { BRAIN, Injectable, Inject } from 'hubular';
 
 @Injectable()
 export class HeroService {

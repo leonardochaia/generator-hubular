@@ -8,7 +8,6 @@ const HubularDependencies = [
   '@types/node',
   '@types/hubot',
   'reflect-metadata',
-  'injection-js',
   // TODO
   'C:\\AstonishingLab\\Development\\hubular\\hubular-v0.0.1.tgz'
 ];
