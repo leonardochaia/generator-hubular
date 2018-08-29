@@ -114,8 +114,8 @@ module.exports = class extends Generator {
     this.fs.copy(this.templatePath('tsconfig.json'), this.destinationPath('tsconfig.json'));
     this.fs.copy(this.templatePath('tslint.json'), this.destinationPath('tslint.json'));
 
-    this.fs.copyTpl(this.templatePath('bin/hubot'), this.destinationPath('bin/hubot'), this.answers);
-    this.fs.copyTpl(this.templatePath('bin/hubot.cmd'), this.destinationPath('bin/hubot.cmd'), this.answers);
+    this.fs.copyTpl(this.templatePath('bin/*'), this.destinationPath('bin'), this.answers);
+    this.fs.copy(this.templatePath('_vscode'), this.destinationPath('.vscode'));
 
     this.fs.copyTpl(this.templatePath('_package.json'), this.destinationPath('package.json'), this.answers);
   }

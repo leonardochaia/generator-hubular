@@ -9,7 +9,8 @@
     "prebuild": "rimraf hubular-scripts",
     "build": "tsc",
     "build:watch": "tsc --watch",
-    "start": "yarn build && bin/hubot --require hubular-scripts"
+    "start": "yarn build && bin/hubot --require hubular-scripts",
+    "start:debug": "yarn build && bin/hubot_debug --require hubular-scripts"
   },
   "engines": {
     "node": ">=8"
