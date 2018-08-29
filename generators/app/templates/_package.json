@@ -1,0 +1,17 @@
+{
+  "name": "hubular-app",
+  "version": "1.0.0",
+  "private": true,
+  "author": "<%= botOwner %>",
+  "description": "<%= botDescription %>",
+
+  "scripts": {
+    "prebuild": "rimraf hubular-scripts",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "start": "yarn build && bin/hubot --require hubular-scripts"
+  },
+  "engines": {
+    "node": ">=8"
+  }
+}

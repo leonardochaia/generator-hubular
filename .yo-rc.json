@@ -1,0 +1,9 @@
+{
+  "generator-node": {
+    "promptValues": {
+      "authorName": "Leonardo Chaia",
+      "authorEmail": "lchaia@astonishinglab.com",
+      "authorUrl": "https://github.com/leonardochaia"
+    }
+  }
+}
