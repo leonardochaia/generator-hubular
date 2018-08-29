@@ -5,11 +5,11 @@
 //   Leonardo Chaia (lchaia@astonishinglab.com)
 
 import { HubularModule } from 'hubular';
-import { EmployeeModule } from './employee/employee.module';
+import { HeroesModule } from './heroes/heroes.module';
 
 @HubularModule({
     imports: [
-        EmployeeModule,
+        HeroesModule,
     ],
 })
 export class AppModule { }
