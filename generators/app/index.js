@@ -106,7 +106,7 @@ module.exports = class extends Generator {
   writing() {
     this.log('Generating Contents..');
 
-    this.fs.copy(this.templatePath('scripts/.gitkeep'), this.destinationPath('scripts/.gitkeep'));
+    this.fs.copy(this.templatePath('scripts/README.md'), this.destinationPath('scripts/README.md'));
     this.fs.copy(this.templatePath('external-scripts.json'), this.destinationPath('external-scripts.json'));
 
     this.fs.copy(this.templatePath('.gitignore'), this.destinationPath('.gitignore'));
