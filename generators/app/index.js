@@ -106,8 +106,6 @@ module.exports = class extends Generator {
 
   writing() {
     this.log('Generating Contents..');
-    this.fs.copy(this.templatePath('bin/hubot'), this.destinationPath('bin/hubot'));
-    this.fs.copy(this.templatePath('bin/hubot.cmd'), this.destinationPath('bin/hubot.cmd'));
 
     this.fs.copy(this.templatePath('scripts/.gitkeep'), this.destinationPath('scripts/.gitkeep'));
     this.fs.copy(this.templatePath('external-scripts.json'), this.destinationPath('external-scripts.json'));
@@ -118,10 +116,17 @@ module.exports = class extends Generator {
     this.fs.copy(this.templatePath('tsconfig.json'), this.destinationPath('tsconfig.json'));
     this.fs.copy(this.templatePath('tslint.json'), this.destinationPath('tslint.json'));
 
-    this.fs.copyTpl(
-      this.templatePath('_package.json'),
-      this.destinationPath('package.json'),
-      this.answers);
+    this.fs.copyTpl(this.templatePath('bin/hubot'), this.destinationPath('bin/hubot'), this.answers);
+    this.fs.copyTpl(this.templatePath('bin/hubot.cmd'), this.destinationPath('bin/hubot.cmd'), this.answers);
+
+    this.fs.copyTpl(this.templatePath('_package.json'), this.destinationPath('package.json'), this.answers);
+  }
+
+  end() {
+    this.log(
+      yosay(`Your ${chalk.red('Hubular')} app is ready!
+      Use ${chalk.yellow('yarn start')} to run Hubot`)
+    );
   }
 
   _determineDefaultOwner() {
@@ -183,15 +188,15 @@ module.exports = class extends Generator {
     }
 
     if (this.options.owner === true) {
-      this.env.error('Missing owner. Make sure to specify it like --owner='<owner>'')
+      this.env.error('Missing owner. Make sure to specify it like --owner=' < owner > '')
     }
 
     if (this.options.name === true) {
-      this.env.error('Missing name. Make sure to specify it like --name='<name>'')
+      this.env.error('Missing name. Make sure to specify it like --name=' < name > '')
     }
 
     if (this.options.description === true) {
-      this.env.error('Missing description. Make sure to specify it like --description='<description>'')
+      this.env.error('Missing description. Make sure to specify it like --description=' < description > '')
     }
 
     if (this.options.adapter === true) {
