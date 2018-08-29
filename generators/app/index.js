@@ -108,7 +108,7 @@ module.exports = class extends Generator {
     this.fs.copy(this.templatePath('scripts/README.md'), this.destinationPath('scripts/README.md'));
     this.fs.copy(this.templatePath('external-scripts.json'), this.destinationPath('external-scripts.json'));
 
-    this.fs.copy(this.templatePath('.gitignore'), this.destinationPath('.gitignore'));
+    this.fs.copy(this.templatePath('_gitignore'), this.destinationPath('.gitignore'));
 
     this.fs.copy(this.templatePath('src'), this.destinationPath('src'));
     this.fs.copy(this.templatePath('tsconfig.json'), this.destinationPath('tsconfig.json'));
