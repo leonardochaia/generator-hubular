@@ -8,8 +8,7 @@ const HubularDependencies = [
   '@types/node',
   '@types/hubot',
   'reflect-metadata',
-  // TODO
-  'C:\\AstonishingLab\\Development\\hubular\\hubular-v0.0.1.tgz'
+  'hubular'
 ];
 
 const HubularDevDependencies = [
