@@ -17,6 +17,14 @@ const HubularDevDependencies = [
   'typescript'
 ];
 
+const HubularTestDevDependencies = [
+  "@types/jasmine",
+  "app-root-path",
+  "hubot-mock-adapter-v3",
+  "jasmine",
+  "jasmine-console-reporter",
+]
+
 module.exports = class extends Generator {
 
   initializing() {
@@ -73,13 +81,23 @@ module.exports = class extends Generator {
       })
     }
 
+    if (this.option.includeTests === undefined) {
+      prompts.push({
+        type: 'input',
+        name: 'includeTests',
+        message: 'Include Specs',
+        default: true
+      })
+    }
+
     this.answers = await this.prompt(prompts)
       .then(answers => {
         const results = {
           botOwner: answers.botOwner || this.options.owner,
           botName: answers.botName || this.options.name,
           botDescription: answers.botDescription || this.options.description,
-          botAdapter: answers.botAdapter || this.options.adapter
+          botAdapter: answers.botAdapter || this.options.adapter,
+          includeTests: answers.includeTests || this.options.includeTests,
         };
 
         this.log(`Validating adapter ${results.botAdapter}`);
@@ -117,7 +135,13 @@ module.exports = class extends Generator {
       'save': true
     });
 
-    this.yarnInstall(HubularDevDependencies, {
+    let devDeps = HubularDevDependencies;
+
+    if (this.answers.includeTests) {
+      devDeps = devDeps.concat(HubularTestDevDependencies);
+    }
+
+    this.yarnInstall(devDeps, {
       'dev': true
     });
   }
@@ -141,6 +165,19 @@ module.exports = class extends Generator {
     this.fs.copyTpl(this.templatePath('_package.json'), this.destinationPath('package.json'), this.answers);
 
     this.fs.copy(this.templatePath('README.md'), this.destinationPath('README.md'));
+
+    if (this.answers.includeTests) {
+
+      this.fs.copy(this.templatePath('spec/**/*'), this.destinationPath('spec'));
+
+      this.fs.extendJSON(this.destinationPath('package.json'), {
+        scripts: {
+          "build:test": "rimraf spec/dist && tsc -p ./spec",
+          "test": "yarn build:test && jasmine --reporter=jasmine-console-reporter"
+        }
+      });
+    }
+
   }
 
   end() {
@@ -149,8 +186,15 @@ module.exports = class extends Generator {
     if (this.answers.botAdapter !== this.defaultAdapter) {
       greet += `\nRemember to check the configuration for ${chalk.yellow(this.answers.botAdapter)} adapter!`
     }
+
+    greet += `\nUse ${chalk.yellow('yarn start')} to run Hubot`
+
+    if (this.answers.includeTests) {
+      greet += `\nUse ${chalk.yellow('yarn test')} to run Jasmine tests`
+    }
+
     this.log(
-      yosay(greet + `\nUse ${chalk.yellow('yarn start')} to run Hubot`)
+      yosay(greet)
     );
   }
 
@@ -183,49 +227,55 @@ module.exports = class extends Generator {
     this.option('owner', {
       desc: 'Name and email of the owner of new bot (ie Example <user@example.com>)',
       type: String
-    })
+    });
 
     this.option('name', {
       desc: 'Name of new bot',
       type: String
-    })
+    });
 
     this.option('description', {
       desc: 'Description of the new bot',
       type: String
-    })
+    });
 
     this.option('adapter', {
       desc: 'Hubot adapter to use for new bot',
       type: String
-    })
+    });
+
+    this.option('includeTests', {
+      desc: 'Include specs',
+      type: Boolean
+    });
 
     this.option('defaults', {
       desc: 'Accept defaults and don\'t prompt for user input',
       type: Boolean
-    })
+    });
 
     if (this.options.defaults) {
-      this.options.owner = this.options.owner || this._determineDefaultOwner()
+      this.options.owner = this.options.owner || this._determineDefaultOwner();
       this.options.name = this.options.name || this.defaultName;
-      this.options.adapter = this.options.adapter || this.defaultAdapter
-      this.options.description = this.options.description || this.defaultDescription
+      this.options.adapter = this.options.adapter || this.defaultAdapter;
+      this.options.description = this.options.description || this.defaultDescription;
+      this.options.includeTests = true;
     }
 
     if (this.options.owner === true) {
-      this.env.error('Missing owner. Make sure to specify it like --owner=' < owner > '')
+      this.env.error('Missing owner. Make sure to specify it like --owner=<OWNER>');
     }
 
     if (this.options.name === true) {
-      this.env.error('Missing name. Make sure to specify it like --name=' < name > '')
+      this.env.error('Missing name. Make sure to specify it like --name=<NAME>');
     }
 
     if (this.options.description === true) {
-      this.env.error('Missing description. Make sure to specify it like --description=' < description > '')
+      this.env.error('Missing description. Make sure to specify it like --description=<DESCRIPTION>');
     }
 
     if (this.options.adapter === true) {
-      this.env.error('Missing adapter name. Make sure to specify it like --adapter=<adapter>')
+      this.env.error('Missing adapter name. Make sure to specify it like --adapter=<ADAPTER>');
     }
   }
 

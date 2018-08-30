@@ -2,5 +2,6 @@ node_modules
 .DS_Store*
 .hubot_history
 hubular-scripts/
+spec/dist
 
 .vscode/*.sql
