@@ -14,7 +14,7 @@ export class HeroesModule {
     @RobotRespond(/heroes$/)
     protected listHeroes(res: Response<HubularRobot>) {
         const heroes = this.hero.getAll();
-        const formatted = heroes.map((e, i) => `${i + 1}. ${e.name}`).join(',');
+        const formatted = heroes.map((e, i) => `${i + 1}. ${e.name}`).join('\n');
 
         res.send(`${heroes.length} heroes registered:`, formatted, `😻`);
     }

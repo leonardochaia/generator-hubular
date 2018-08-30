@@ -2,6 +2,7 @@
 const Generator = require('yeoman-generator');
 const chalk = require('chalk');
 const yosay = require('yosay');
+const npmName = require('npm-name');
 
 const HubularDependencies = [
   'hubot',
@@ -30,7 +31,7 @@ module.exports = class extends Generator {
 
     this.log(
       yosay(`Welcome to the ${chalk.red('Hubular')} generator!
-      Let's get you started your brand new Hubot Bot!`)
+      Let's get you started with your brand new Hubot Bot!`)
     );
 
     const prompts = [];
@@ -63,7 +64,6 @@ module.exports = class extends Generator {
       });
     }
 
-    // FIXME validate argument like we do when prompting
     if (!this.options.adapter) {
       prompts.push({
         type: 'input',
@@ -75,16 +75,36 @@ module.exports = class extends Generator {
 
     this.answers = await this.prompt(prompts)
       .then(answers => {
-        return {
+        const results = {
           botOwner: answers.botOwner || this.options.owner,
           botName: answers.botName || this.options.name,
           botDescription: answers.botDescription || this.options.description,
           botAdapter: answers.botAdapter || this.options.adapter
         };
+
+        this.log(`Validating adapter ${results.botAdapter}`);
+        return npmName(`hubot-${results.botAdapter}`)
+          .then(exists => {
+            if (exists) {
+              this.log(`Found adapter on NPM.`);
+              return results;
+            } else {
+              this.env.error(`Package for adapter ${chalk.red(results.botAdapter)} does not exist on NPM.`);
+            }
+          }, (e) => {
+            this.env.error(`Failed to find adapter ${chalk.red(results.botAdapter)} on NPM. \n ${e.message}`);
+          });
       });
   }
 
   installHubularPackages() {
+
+    // This shouldn't happen, but somehow it does.
+    if (!this.answers.botAdapter || !this.answers.botAdapter.length) {
+      this.log(`No adapter provided. Using ${this.defaultAdapter}`);
+      this.answers.botAdapter = this.defaultAdapter;
+    }
+
     const adapterPackage = [`hubot-${this.answers.botAdapter}`];
 
     const externalScripts = require('./templates/external-scripts.json');
@@ -114,16 +134,23 @@ module.exports = class extends Generator {
     this.fs.copy(this.templatePath('tsconfig.json'), this.destinationPath('tsconfig.json'));
     this.fs.copy(this.templatePath('tslint.json'), this.destinationPath('tslint.json'));
 
-    this.fs.copyTpl(this.templatePath('bin/*'), this.destinationPath('bin'), this.answers);
     this.fs.copy(this.templatePath('_vscode'), this.destinationPath('.vscode'));
 
+    this.fs.copyTpl(this.templatePath('_hubular.json'), this.destinationPath('hubular.json'), this.answers);
+
     this.fs.copyTpl(this.templatePath('_package.json'), this.destinationPath('package.json'), this.answers);
+
+    this.fs.copy(this.templatePath('README.md'), this.destinationPath('README.md'));
   }
 
   end() {
+    let greet = `Your ${chalk.red('Hubular')} app is ready!`;
+
+    if (this.answers.botAdapter !== this.defaultAdapter) {
+      greet += `\nRemember to check the configuration for ${chalk.yellow(this.answers.botAdapter)} adapter!`
+    }
     this.log(
-      yosay(`Your ${chalk.red('Hubular')} app is ready!
-      Use ${chalk.yellow('yarn start')} to run Hubot`)
+      yosay(greet + `\nUse ${chalk.yellow('yarn start')} to run Hubot`)
     );
   }
 

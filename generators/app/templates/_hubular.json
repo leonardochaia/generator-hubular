@@ -1,0 +1,7 @@
+{
+  "bot": {
+    "name": "<%= botName %>",
+    "adapter": "<%= botAdapter %>",
+    "require": "hubular-scripts"
+  }
+}
