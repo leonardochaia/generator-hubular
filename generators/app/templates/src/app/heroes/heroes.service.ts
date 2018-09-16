@@ -1,6 +1,5 @@
-import { Brain } from 'hubot';
 import { HeroInfo } from './heroes.models';
-import { BRAIN, Injectable, Inject } from 'hubular';
+import { HubularRobot, Injectable } from 'hubular';
 
 @Injectable()
 export class HeroService {
@@ -9,11 +8,8 @@ export class HeroService {
         { id: 'a7d2', name: 'Penny' }
     ];
 
-    constructor(
-        @Inject(BRAIN)
-        protected brain: Brain) {
-
-        // TODO: Use the brain for persistence
+    constructor(private robot: HubularRobot) {
+        // TODO: Use robot.brain for persistence
     }
 
     public register(info: HeroInfo) {
